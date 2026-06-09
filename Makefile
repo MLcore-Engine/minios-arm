@@ -19,7 +19,11 @@ LDFLAGS := -T linker.ld -nostdlib
 
 SRCS := \
 	src/boot.S \
+	src/kernel/exception.S \
+	src/kernel/irq.c \
+	src/kernel/log.c \
 	src/kernel/main.c \
+	src/kernel/timer.c \
 	src/drivers/uart.c
 
 OBJS := $(patsubst src/%,$(BUILD_DIR)/%.o,$(SRCS))
@@ -45,10 +49,10 @@ $(IMG): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
 run: $(ELF)
-	$(QEMU) -M virt -cpu cortex-a53 -nographic -serial mon:stdio -kernel $(ELF)
+	$(QEMU) -M virt,gic-version=2 -cpu cortex-a53 -nographic -serial mon:stdio -kernel $(ELF)
 
 debug: $(ELF)
-	$(QEMU) -M virt -cpu cortex-a53 -nographic -serial mon:stdio -kernel $(ELF) -S -s
+	$(QEMU) -M virt,gic-version=2 -cpu cortex-a53 -nographic -serial mon:stdio -kernel $(ELF) -S -s
 
 clean:
 	rm -rf $(BUILD_DIR)

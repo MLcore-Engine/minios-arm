@@ -10,7 +10,11 @@
 - 清空 BSS
 - 设置内核栈
 - 初始化 PL011 UART
-- 打印启动日志
+- 最小日志/printf 模块
+- ARM64 异常向量表
+- GICv2 IRQ 分发
+- ARM generic timer
+- 每秒打印 timer tick
 
 ## 目录结构
 
@@ -23,9 +27,16 @@
     ├── drivers
     │   └── uart.c
     ├── include
+    │   ├── irq.h
+    │   ├── log.h
+    │   ├── timer.h
     │   └── uart.h
     └── kernel
-        └── main.c
+        ├── exception.S
+        ├── irq.c
+        ├── log.c
+        ├── main.c
+        └── timer.c
 ```
 
 ## 依赖
@@ -62,8 +73,12 @@ make run
 预期输出：
 
 ```text
-miniOS ARM64 booting...
-Hello from QEMU virt machine.
+[info] miniOS ARM64 booting...
+[info] initializing interrupts and timer
+[info] timer frequency 62500000 Hz
+[info] timer interrupt enabled
+[info] tick 1
+[info] tick 2
 ```
 
 退出 QEMU：
